@@ -19,18 +19,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        brightness: Provider.of<Configuration>(context).brightness
       ),
-      home: MyHomePage(title: Provider.of<Configuration>(context).title),
+      home: const MyHomePage(title: "My App"),
     );
   }
 }
@@ -57,8 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-      _counter++;
-      Provider.of<Configuration>(context, listen: false).changeTitle("Click count $_counter");
+      setState(() {
+        _counter++;
+      });
+  }
+
+  void _changeTheme(Brightness brightness) {
+      Provider.of<Configuration>(context, listen: false).changeTheme(brightness);
   }
 
   @override
@@ -95,6 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextButton(onPressed: ()=> _changeTheme(Brightness.dark), child: const Text("Dark")),
+            TextButton(onPressed: ()=> _changeTheme(Brightness.light), child: const Text("Light")),
             const Text(
               'You have pushed the button this many times:',
             ),
