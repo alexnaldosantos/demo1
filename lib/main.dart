@@ -78,4 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
 }
