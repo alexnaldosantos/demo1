@@ -1,10 +1,13 @@
 import 'package:demo1/api.dart';
-import 'package:demo1/post.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'postrepository.dart';
+import 'postviewmodel.dart';
 
 void setup() {
   GetIt.I.registerSingleton<Api>(ApiImpl());
+  GetIt.I.registerSingleton<PostRepository>(PostRepository());
+  GetIt.I.registerFactory<PostViewModel>(() => PostViewModel());
 }
 
 void main() {
@@ -56,12 +59,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Post> posts = [];
+  final viewModel = GetIt.I.get<PostViewModel>();
 
   void _fetchData() async {
-    var api = GetIt.I<Api>();
-    final newPosts = await api.getPosts();
-    setState(() => posts = newPosts);
+    viewModel.loadPosts(setState);
   }
 
   @override
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: posts.isNotEmpty
+      body: viewModel.posts.isNotEmpty
           ? _lista()
           : _button(), // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -97,11 +98,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _lista() {
     return ListView.builder(
-      itemCount: posts.length,
+      itemCount: viewModel.posts.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(posts[index].title),
-          subtitle: Text(posts[index].body),
+          title: Text(viewModel.posts[index].title),
+          subtitle: Text(viewModel.posts[index].body),
         );
       },
     );
