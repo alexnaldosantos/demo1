@@ -1,8 +1,14 @@
 import 'package:demo1/api.dart';
 import 'package:demo1/post.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+void setup() {
+  GetIt.I.registerSingleton<Api>(ApiImpl());
+}
 
 void main() {
+  setup();
   runApp(const MyApp());
 }
 
@@ -53,7 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Post> posts = [];
 
   void _fetchData() async {
-    final newPosts = await getPosts();
+    var api = GetIt.I<Api>();
+    final newPosts = await api.getPosts();
     setState(() => posts = newPosts);
   }
 
